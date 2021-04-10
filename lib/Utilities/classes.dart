@@ -1,4 +1,4 @@
-class DirectoryOS {
+class DirectoryDB {
   String dirName;
   String dirPath;
   DateTime created;
@@ -7,7 +7,7 @@ class DirectoryOS {
   DateTime lastModified;
   String newName;
 
-  DirectoryOS({
+  DirectoryDB({
     this.dirName,
     this.created,
     this.dirPath,
@@ -18,12 +18,12 @@ class DirectoryOS {
   });
 }
 
-class ImageOS {
+class ImageDB {
   int idx;
   String imgPath;
   int shouldCompress;
 
-  ImageOS({
+  ImageDB({
     this.idx,
     this.imgPath,
     this.shouldCompress,

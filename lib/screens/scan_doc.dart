@@ -20,9 +20,9 @@ List<bool> selectedImageIndex = [];
 
 class ScanDoc extends StatefulWidget {
   static const routeName = 'ScanDoc';
-  final DirectoryOS directoryOS;
+  final DirectoryDB directoryDB;
 
-  ScanDoc({this.directoryOS});
+  ScanDoc({this.directoryDB});
   @override
   _ScanDocState createState() => _ScanDocState();
 }
@@ -53,27 +53,27 @@ class _ScanDocState extends State<ScanDoc> {
   List<Map<String, dynamic>> directoryData;
 
   /// list that holdes images
-  List<ImageOS> directoryImages = [];
+  List<ImageDB> directoryImages = [];
 
   /// list that holdes initial images
-  List<ImageOS> initDirectoryImages = [];
+  List<ImageDB> initDirectoryImages = [];
 
   bool enableSelectionIcons = false;
   bool resetReorder = false;
   bool quickScan = false;
 
   /// instance of image os
-  ImageOS displayImage;
+  ImageDB displayImage;
   //int imageQuality = 3;
 
   /// this works for making new directory when new button is pressed on scan home screen
-  /// this function creates external directory and stores dirname in DirectoryOS class
+  /// this function creates external directory and stores dirname in DirectoryDB class
   /// it finds external dir path and makes foldrer(dir ) in it with namr of datetime.now()
   Future<void> createDirectoryPath() async {
     Directory appDir = await getExternalStorageDirectory();
     dirPath = "${appDir.path}/Scan ${DateTime.now()}";
     fileName = dirPath.substring(dirPath.lastIndexOf("/") + 1);
-    widget.directoryOS.dirName = fileName;
+    widget.directoryDB.dirName = fileName;
   }
 
   /// retrives masterdiectory details
@@ -87,13 +87,13 @@ class _ScanDocState extends State<ScanDoc> {
     imageFilesPath = [];
     selectedImageIndex = [];
     int index = 1;
-    directoryData = await database.getDirectoryData(widget.directoryOS.dirName);
-    print('Directory table[$widget.directoryOS.dirName] => $directoryData');
+    directoryData = await database.getDirectoryData(widget.directoryDB.dirName);
+    print('Directory table[$widget.directoryDB.dirName] => $directoryData');
     for (var image in directoryData) {
       // Updating first image path after delete
       if (updateFirstImage) {
         database.updateFirstImagePath(
-            imagePath: image['img_path'], dirPath: widget.directoryOS.dirPath);
+            imagePath: image['img_path'], dirPath: widget.directoryDB.dirPath);
         updateFirstImage = false;
       }
       var i = image['idx'];
@@ -102,22 +102,22 @@ class _ScanDocState extends State<ScanDoc> {
       if (updateIndex) {
         i = index;
         database.updateImageIndex(
-          image: ImageOS(
+          image: ImageDB(
             idx: i,
             imgPath: image['img_path'],
           ),
-          tableName: widget.directoryOS.dirName,
+          tableName: widget.directoryDB.dirName,
         );
       }
 
       directoryImages.add(
-        ImageOS(
+        ImageDB(
           idx: i,
           imgPath: image['img_path'],
         ),
       );
       initDirectoryImages.add(
-        ImageOS(
+        ImageDB(
           idx: i,
           imgPath: image['img_path'],
         ),
@@ -178,16 +178,16 @@ class _ScanDocState extends State<ScanDoc> {
     print(selectedImageIndex);
     for (var image in directoryImages) {
       ImageCard imageCard = ImageCard(
-        imageOS: image,
-        directoryOS: widget.directoryOS,
+        imageDB: image,
+        directoryDB: widget.directoryDB,
         fileEditCallback: () {
-          fileEditCallback(imageOS: image);
+          fileEditCallback(imageDB: image);
         },
         selectCallback: () {
-          selectionCallback(imageOS: image);
+          selectionCallback(imageDB: image);
         },
         imageViewerCallback: () {
-          imageViewerCallback(imageOS: image);
+          imageViewerCallback(imageDB: image);
         },
       );
       if (!imageCards.contains(imageCard)) {
@@ -197,7 +197,7 @@ class _ScanDocState extends State<ScanDoc> {
     return imageCards;
   }
 
-  selectionCallback({ImageOS imageOS}) {
+  selectionCallback({ImageDB imageDB}) {
     if (selectedImageIndex.contains(true)) {
       setState(() {
         enableSelectionIcons = true;
@@ -209,9 +209,9 @@ class _ScanDocState extends State<ScanDoc> {
     }
   }
 
-  void fileEditCallback({ImageOS imageOS}) {
+  void fileEditCallback({ImageDB imageDB}) {
     bool isFirstImage = false;
-    if (imageOS.imgPath == widget.directoryOS.firstImgPath) {
+    if (imageDB.imgPath == widget.directoryDB.firstImgPath) {
       isFirstImage = true;
     }
     getDirectoryData(
@@ -220,9 +220,9 @@ class _ScanDocState extends State<ScanDoc> {
     );
   }
 
-  imageViewerCallback({ImageOS imageOS}) {
+  imageViewerCallback({ImageDB imageDB}) {
     setState(() {
-      displayImage = imageOS;
+      displayImage = imageDB;
       showImage = true;
     });
   }
@@ -231,7 +231,7 @@ class _ScanDocState extends State<ScanDoc> {
     print(newIndex);
     Widget image = imageCards.removeAt(oldIndex);
     imageCards.insert(newIndex, image);
-    ImageOS image1 = directoryImages.removeAt(oldIndex);
+    ImageDB image1 = directoryImages.removeAt(oldIndex);
     directoryImages.insert(newIndex, image1);
   }
 
@@ -254,7 +254,7 @@ class _ScanDocState extends State<ScanDoc> {
         print('${directoryImages[i].idx}: ${directoryImages[i].imgPath}');
 
         /// if image is first image
-        if (directoryImages[i].imgPath == widget.directoryOS.firstImgPath) {
+        if (directoryImages[i].imgPath == widget.directoryDB.firstImgPath) {
           isFirstImage = true;
         }
 
@@ -264,7 +264,7 @@ class _ScanDocState extends State<ScanDoc> {
         /// remove image data frim db
         database.deleteImage(
           imgPath: directoryImages[i].imgPath,
-          tableName: widget.directoryOS.dirName,
+          tableName: widget.directoryDB.dirName,
         );
       }
     }
@@ -273,14 +273,14 @@ class _ScanDocState extends State<ScanDoc> {
 
     /// change image count in master table
     database.updateImageCount(
-      tableName: widget.directoryOS.dirName,
+      tableName: widget.directoryDB.dirName,
     );
 
     /// recursive false means if it is last image then delete whole
     /// folder and entry in masterdirectory table
     try {
-      Directory(widget.directoryOS.dirPath).deleteSync(recursive: false);
-      database.deleteDirectory(dirPath: widget.directoryOS.dirPath);
+      Directory(widget.directoryDB.dirPath).deleteSync(recursive: false);
+      database.deleteDirectory(dirPath: widget.directoryDB.dirPath);
     } catch (e) {
       /// if there are images get data with update index
       getDirectoryData(
@@ -319,9 +319,9 @@ class _ScanDocState extends State<ScanDoc> {
   void initState() {
     super.initState();
     fileOperations = FileOperations();
-    if (widget.directoryOS.dirPath != null) {
-      dirPath = widget.directoryOS.dirPath;
-      fileName = widget.directoryOS.newName;
+    if (widget.directoryDB.dirPath != null) {
+      dirPath = widget.directoryDB.dirPath;
+      fileName = widget.directoryDB.newName;
       getDirectoryData();
     } else {
       createDirectoryPath();
@@ -398,19 +398,19 @@ class _ScanDocState extends State<ScanDoc> {
                         if (i == 1) {
                           /// when first image is modified update first image path
                           database.updateFirstImagePath(
-                            dirPath: widget.directoryOS.dirPath,
+                            dirPath: widget.directoryDB.dirPath,
                             imagePath: directoryImages[i - 1].imgPath,
                           );
 
                           /// change object attribute
-                          widget.directoryOS.firstImgPath =
+                          widget.directoryDB.firstImgPath =
                               directoryImages[i - 1].imgPath;
                         }
 
                         /// update rest image path other than first
                         database.updateImagePath(
                           image: directoryImages[i - 1],
-                          tableName: widget.directoryOS.dirName,
+                          tableName: widget.directoryDB.dirName,
                         );
                         print('$i: ${directoryImages[i - 1].imgPath}');
                       }

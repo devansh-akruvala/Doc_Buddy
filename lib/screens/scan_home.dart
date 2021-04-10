@@ -23,7 +23,7 @@ class _ScanHomeState extends State<ScanHome> {
   List<Map<String, dynamic>> masterData;
 
   /// masterdata
-  List<DirectoryOS> masterDirectories = [];
+  List<DirectoryDB> masterDirectories = [];
 
   /// list of deerictoreis
 
@@ -41,7 +41,7 @@ class _ScanHomeState extends State<ScanHome> {
 
   /// function to get data of masterdirectory table  and store it in masterdata(list of map)
   ///
-  Future<List<DirectoryOS>> getMasterData() async {
+  Future<List<DirectoryDB>> getMasterData() async {
     masterDirectories = [];
 
     /// 1. getmasterdata returns tuples of form listofmaps which is stored in masterdata variable
@@ -50,7 +50,7 @@ class _ScanHomeState extends State<ScanHome> {
     /// fetch data from db and store it to list my dictonary then this dictonary can be used to display data
     print('Master Table => $masterData');
 
-    /// for each row in masterdata it is converted into list of objects of DirectoryOS
+    /// for each row in masterdata it is converted into list of objects of DirectoryDB
     for (var directory in masterData) {
       var flag = false;
       for (var dir in masterDirectories) {
@@ -60,7 +60,7 @@ class _ScanHomeState extends State<ScanHome> {
       }
       if (!flag) {
         masterDirectories.add(
-          DirectoryOS(
+          DirectoryDB(
             dirName: directory['dir_name'],
             dirPath: directory['dir_path'],
             created: DateTime.parse(directory['created']),
@@ -82,7 +82,7 @@ class _ScanHomeState extends State<ScanHome> {
     homeRefresh();
   }
 
-  Future<void> _rename(DirectoryOS directory) async {
+  Future<void> _rename(DirectoryDB directory) async {
     database.renameDirectory(directory: directory);
     homeRefresh();
   }
@@ -157,7 +157,7 @@ class _ScanHomeState extends State<ScanHome> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (contex) => ScanDoc(
-                                              directoryOS:
+                                              directoryDB:
                                                   masterDirectories[index],
                                             ))).whenComplete(homeRefresh);
                               }),
@@ -249,7 +249,7 @@ class _ScanHomeState extends State<ScanHome> {
             context,
             MaterialPageRoute(
               builder: (context) => ScanDoc(
-                directoryOS: DirectoryOS(),
+                directoryDB: DirectoryDB(),
               ),
             ),
           ).whenComplete(() {

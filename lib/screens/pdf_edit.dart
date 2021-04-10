@@ -17,7 +17,7 @@ bool enableSelect = false;
 bool enableReorder = false;
 bool showImage = false;
 List<bool> selectedImageIndex = [];
-ImageOS displayImage;
+ImageDB displayImage;
 
 class PdfEdit extends StatefulWidget {
   static const routeName = '/editPdf';
@@ -28,9 +28,9 @@ class PdfEdit extends StatefulWidget {
 class _PdfEdit extends State<PdfEdit> {
   String fileName;
   DatabaseHelper database = DatabaseHelper();
-  DirectoryOS tempDir = new DirectoryOS();
-  List<ImageOS> tempImages;
-  List<ImageOS> tempImages1;
+  DirectoryDB tempDir = new DirectoryDB();
+  List<ImageDB> tempImages;
+  List<ImageDB> tempImages1;
   List<Widget> imageCards;
   bool enableSelectionIcons = false;
   bool resetReorder = false;
@@ -61,13 +61,13 @@ class _PdfEdit extends State<PdfEdit> {
       i = index;
 
       tempImages.add(
-        ImageOS(
+        ImageDB(
           idx: i,
           imgPath: image['img_path'],
         ),
       );
       tempImages1.add(
-        ImageOS(
+        ImageDB(
           idx: i,
           imgPath: image['img_path'],
         ),
@@ -87,7 +87,7 @@ class _PdfEdit extends State<PdfEdit> {
     String dirPath = '${appDir.path}/temp';
     print('dffs 3');
     print(dirPath);
-    tempDir = DirectoryOS(dirPath: dirPath, dirName: DateTime.now().toString());
+    tempDir = DirectoryDB(dirPath: dirPath, dirName: DateTime.now().toString());
     print('dffs 5');
 
     new Directory(dirPath).create();
@@ -120,7 +120,7 @@ class _PdfEdit extends State<PdfEdit> {
         await fileabc.writeAsBytes(pageImage.bytes);
         //print(fileabc.path);
         print('$i');
-        database.createImageTemp(image: ImageOS(idx: i, imgPath: fileabc.path));
+        database.createImageTemp(image: ImageDB(idx: i, imgPath: fileabc.path));
         setState(() {
           counter = i;
         });
@@ -143,16 +143,16 @@ class _PdfEdit extends State<PdfEdit> {
     print(selectedImageIndex);
     for (var image in tempImages) {
       ImageCardEdit imageCard = ImageCardEdit(
-        imageOS: image,
-        directoryOS: tempDir,
+        imageDB: image,
+        directoryDB: tempDir,
         fileEditCallback: () {
-          fileEditCallback(imageOS: image);
+          fileEditCallback(imageDB: image);
         },
         selectCallback: () {
-          selectionCallback(imageOS: image);
+          selectionCallback(imageDB: image);
         },
         imageViewerCallback: () {
-          imageViewerCallback(imageOS: image);
+          imageViewerCallback(imageDB: image);
         },
       );
 
@@ -164,7 +164,7 @@ class _PdfEdit extends State<PdfEdit> {
     return imageCards;
   }
 
-  selectionCallback({ImageOS imageOS}) {
+  selectionCallback({ImageDB imageDB}) {
     if (selectedImageIndex.contains(true)) {
       setState(() {
         enableSelectionIcons = true;
@@ -176,13 +176,13 @@ class _PdfEdit extends State<PdfEdit> {
     }
   }
 
-  void fileEditCallback({ImageOS imageOS}) {
+  void fileEditCallback({ImageDB imageDB}) {
     getDirectoryData();
   }
 
-  imageViewerCallback({ImageOS imageOS}) {
+  imageViewerCallback({ImageDB imageDB}) {
     setState(() {
-      displayImage = imageOS;
+      displayImage = imageDB;
       showImage = true;
     });
   }
@@ -191,7 +191,7 @@ class _PdfEdit extends State<PdfEdit> {
     print(newIndex);
     Widget image = imageCards.removeAt(oldIndex);
     imageCards.insert(newIndex, image);
-    ImageOS image1 = tempImages.removeAt(oldIndex);
+    ImageDB image1 = tempImages.removeAt(oldIndex);
     tempImages.insert(newIndex, image1);
   }
 

@@ -33,7 +33,7 @@ class _LockerWidgetState extends State<LockerWidget> {
     /// fetch data from db and store it to list my dictonary then this dictonary can be used to display data
     print('locker Table => $lockerData');
 
-    /// for each row in masterdata it is converted into list of objects of DirectoryOS
+    /// for each row in masterdata it is converted into list of objects of DirectoryDB
     for (var directory in lockerData) {
       var flag = false;
       for (var dir in locker) {

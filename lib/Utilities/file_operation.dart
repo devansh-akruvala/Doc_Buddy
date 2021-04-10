@@ -101,7 +101,7 @@ class FileOperations {
     if (!await Directory(dirPath).exists()) {
       new Directory(dirPath).create();
       await database.createDirectory(
-        directory: DirectoryOS(
+        directory: DirectoryDB(
           dirName: dirPath.substring(dirPath.lastIndexOf('/') + 1),
           dirPath: dirPath,
           imageCount: 0,
@@ -125,7 +125,7 @@ class FileOperations {
     File tempPic = File("$dirPath/${DateTime.now()}.jpg");
     image.copy(tempPic.path);
     database.createImage(
-      image: ImageOS(
+      image: ImageDB(
         imgPath: tempPic.path,
         idx: index,
         shouldCompress: shouldCompress,
@@ -182,10 +182,10 @@ class FileOperations {
       print(e);
       selectedDirectory = await pickDirectory(context, selectedDirectory);
     }
-    List<ImageOS> foo = [];
+    List<ImageDB> foo = [];
     if (images.runtimeType == foo.runtimeType) {
       var tempImages = [];
-      for (ImageOS image in images) {
+      for (ImageDB image in images) {
         tempImages.add(File(image.imgPath));
       }
       images = tempImages;
@@ -207,10 +207,10 @@ class FileOperations {
   Future<bool> saveToAppDirectory(
       {BuildContext context, String fileName, dynamic images}) async {
     Directory selectedDirectory = await getApplicationDocumentsDirectory();
-    List<ImageOS> foo = [];
+    List<ImageDB> foo = [];
     if (images.runtimeType == foo.runtimeType) {
       var tempImages = [];
-      for (ImageOS image in images) {
+      for (ImageDB image in images) {
         tempImages.add(File(image.imgPath));
       }
       images = tempImages;
@@ -266,10 +266,10 @@ class FileOperations {
       print(e);
       selectedDirectory = await pickDirectory(context, selectedDirectory);
     }
-    List<ImageOS> foo = [];
+    List<ImageDB> foo = [];
     if (images.runtimeType == foo.runtimeType) {
       var tempImages = [];
-      for (ImageOS image in images) {
+      for (ImageDB image in images) {
         tempImages.add(File(image.imgPath));
       }
       images = tempImages;

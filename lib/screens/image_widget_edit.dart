@@ -9,15 +9,15 @@ import './pdf_edit.dart';
 
 class ImageCardEdit extends StatefulWidget {
   final Function fileEditCallback;
-  final DirectoryOS directoryOS;
-  final ImageOS imageOS;
+  final DirectoryDB directoryDB;
+  final ImageDB imageDB;
   final Function selectCallback;
   final Function imageViewerCallback;
 
   const ImageCardEdit({
     this.fileEditCallback,
-    this.directoryOS,
-    this.imageOS,
+    this.directoryDB,
+    this.imageDB,
     this.selectCallback,
     this.imageViewerCallback,
   });
@@ -29,7 +29,7 @@ class _ImageCardEditState extends State<ImageCardEdit> {
   DatabaseHelper database = DatabaseHelper();
   selectionOnPressed() {
     setState(() {
-      selectedImageIndex[widget.imageOS.idx - 1] = true;
+      selectedImageIndex[widget.imageDB.idx - 1] = true;
     });
     widget.selectCallback();
   }
@@ -37,7 +37,7 @@ class _ImageCardEditState extends State<ImageCardEdit> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    print('Called with: ${widget.imageOS.idx}');
+    print('Called with: ${widget.imageDB.idx}');
     return Stack(children: [
       Card(
         child: FocusedMenuHolder(
@@ -52,7 +52,7 @@ class _ImageCardEditState extends State<ImageCardEdit> {
             //   title: Text("Edit"),
             //   onPressed: () async {
             //     File croppedFile = await ImageCropper.cropImage(
-            //         sourcePath: widget.imageOS.imgPath,
+            //         sourcePath: widget.imageDB.imgPath,
             //         // aspectRatioPresets: [
             //         //   CropAspectRatioPreset.square,
             //         //   CropAspectRatioPreset.ratio3x2,
@@ -70,23 +70,23 @@ class _ImageCardEditState extends State<ImageCardEdit> {
             //           minimumAspectRatio: 1.0,
             //         ));
             //     File image = croppedFile;
-            //     File temp = File(widget.imageOS.imgPath
-            //             .substring(0, widget.imageOS.imgPath.lastIndexOf(".")) +
+            //     File temp = File(widget.imageDB.imgPath
+            //             .substring(0, widget.imageDB.imgPath.lastIndexOf(".")) +
             //         "c.jpg");
-            //     File(widget.imageOS.imgPath).deleteSync();
+            //     File(widget.imageDB.imgPath).deleteSync();
             //     if (image != null) {
             //       image.copySync(temp.path);
             //     }
-            //     widget.imageOS.imgPath = temp.path;
+            //     widget.imageDB.imgPath = temp.path;
             //     print(temp.path);
             //     database.updateImagePath(
-            //       tableName: widget.directoryOS.dirName,
-            //       image: widget.imageOS,
+            //       tableName: widget.directoryDB.dirName,
+            //       image: widget.imageDB,
             //     );
-            //     if (widget.imageOS.idx == 1) {
+            //     if (widget.imageDB.idx == 1) {
             //       database.updateFirstImagePath(
-            //         imagePath: widget.imageOS.imgPath,
-            //         dirPath: widget.directoryOS.dirPath,
+            //         imagePath: widget.imageDB.imgPath,
+            //         dirPath: widget.directoryDB.dirPath,
             //       );
             //     }
 
@@ -109,12 +109,12 @@ class _ImageCardEditState extends State<ImageCardEdit> {
                                 child: Text('Cancel')),
                             TextButton(
                                 onPressed: () {
-                                  File(widget.imageOS.imgPath).deleteSync();
+                                  File(widget.imageDB.imgPath).deleteSync();
                                   database.deleteTempImage(
-                                      imgPath: widget.imageOS.imgPath);
+                                      imgPath: widget.imageDB.imgPath);
                                   try {
                                     print('deleted 1');
-                                    Directory(widget.directoryOS.dirPath)
+                                    Directory(widget.directoryDB.dirPath)
                                         .deleteSync(recursive: false);
                                     database.deleteTempDirectory();
                                     Navigator.pop(context);
@@ -132,18 +132,18 @@ class _ImageCardEditState extends State<ImageCardEdit> {
                 }),
           ],
           child: Image.file(
-            File(widget.imageOS.imgPath),
+            File(widget.imageDB.imgPath),
             width: size.width * 0.30,
             height: size.height * 0.20,
           ),
         ),
       ),
-      (selectedImageIndex[widget.imageOS.idx - 1] && enableSelect)
+      (selectedImageIndex[widget.imageDB.idx - 1] && enableSelect)
           ? Positioned.fill(
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedImageIndex[widget.imageOS.idx - 1] = false;
+                    selectedImageIndex[widget.imageDB.idx - 1] = false;
                   });
                   widget.selectCallback();
                 },

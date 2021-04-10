@@ -9,15 +9,15 @@ import './scan_doc.dart';
 
 class ImageCard extends StatefulWidget {
   final Function fileEditCallback;
-  final DirectoryOS directoryOS;
-  final ImageOS imageOS;
+  final DirectoryDB directoryDB;
+  final ImageDB imageDB;
   final Function selectCallback;
   final Function imageViewerCallback;
 
   const ImageCard({
     this.fileEditCallback,
-    this.directoryOS,
-    this.imageOS,
+    this.directoryDB,
+    this.imageDB,
     this.selectCallback,
     this.imageViewerCallback,
   });
@@ -30,7 +30,7 @@ class _ImageCardState extends State<ImageCard> {
 
   selectionOnPressed() {
     setState(() {
-      selectedImageIndex[widget.imageOS.idx - 1] = true;
+      selectedImageIndex[widget.imageDB.idx - 1] = true;
     });
     widget.selectCallback();
   }
@@ -53,7 +53,7 @@ class _ImageCardState extends State<ImageCard> {
               title: Text("Edit"),
               onPressed: () async {
                 File croppedFile = await ImageCropper.cropImage(
-                    sourcePath: widget.imageOS.imgPath,
+                    sourcePath: widget.imageDB.imgPath,
                     // aspectRatioPresets: [
                     //   CropAspectRatioPreset.square,
                     //   CropAspectRatioPreset.ratio3x2,
@@ -71,23 +71,23 @@ class _ImageCardState extends State<ImageCard> {
                       minimumAspectRatio: 1.0,
                     ));
                 File image = croppedFile;
-                File temp = File(widget.imageOS.imgPath
-                        .substring(0, widget.imageOS.imgPath.lastIndexOf(".")) +
+                File temp = File(widget.imageDB.imgPath
+                        .substring(0, widget.imageDB.imgPath.lastIndexOf(".")) +
                     "c.jpg");
-                File(widget.imageOS.imgPath).deleteSync();
+                File(widget.imageDB.imgPath).deleteSync();
                 if (image != null) {
                   image.copySync(temp.path);
                 }
-                widget.imageOS.imgPath = temp.path;
+                widget.imageDB.imgPath = temp.path;
                 print(temp.path);
                 database.updateImagePath(
-                  tableName: widget.directoryOS.dirName,
-                  image: widget.imageOS,
+                  tableName: widget.directoryDB.dirName,
+                  image: widget.imageDB,
                 );
-                if (widget.imageOS.idx == 1) {
+                if (widget.imageDB.idx == 1) {
                   database.updateFirstImagePath(
-                    imagePath: widget.imageOS.imgPath,
-                    dirPath: widget.directoryOS.dirPath,
+                    imagePath: widget.imageDB.imgPath,
+                    dirPath: widget.directoryDB.dirPath,
                   );
                 }
 
@@ -110,19 +110,19 @@ class _ImageCardState extends State<ImageCard> {
                                 child: Text('Cancel')),
                             TextButton(
                                 onPressed: () {
-                                  File(widget.imageOS.imgPath).deleteSync();
+                                  File(widget.imageDB.imgPath).deleteSync();
                                   database.deleteImage(
-                                      imgPath: widget.imageOS.imgPath,
-                                      tableName: widget.directoryOS.dirName);
+                                      imgPath: widget.imageDB.imgPath,
+                                      tableName: widget.directoryDB.dirName);
 
                                   database.updateImageCount(
-                                    tableName: widget.directoryOS.dirName,
+                                    tableName: widget.directoryDB.dirName,
                                   );
                                   try {
-                                    Directory(widget.directoryOS.dirPath)
+                                    Directory(widget.directoryDB.dirPath)
                                         .deleteSync(recursive: false);
                                     database.deleteDirectory(
-                                        dirPath: widget.directoryOS.dirPath);
+                                        dirPath: widget.directoryDB.dirPath);
                                     Navigator.pop(context);
                                   } catch (e) {
                                     widget.fileEditCallback();
@@ -137,18 +137,18 @@ class _ImageCardState extends State<ImageCard> {
                 }),
           ],
           child: Image.file(
-            File(widget.imageOS.imgPath),
+            File(widget.imageDB.imgPath),
             width: size.width * 0.30,
             height: size.height * 0.20,
           ),
         ),
       ),
-      (selectedImageIndex[widget.imageOS.idx - 1] && enableSelect)
+      (selectedImageIndex[widget.imageDB.idx - 1] && enableSelect)
           ? Positioned.fill(
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedImageIndex[widget.imageOS.idx - 1] = false;
+                    selectedImageIndex[widget.imageDB.idx - 1] = false;
                   });
                   widget.selectCallback();
                 },

@@ -83,7 +83,7 @@ class DatabaseHelper {
   //// this is used to insert values in table DerictoryDetails
 //// It also creates another table with foldername(directory name) to store info about images
   ///
-  Future createDirectory({DirectoryOS directory}) async {
+  Future createDirectory({DirectoryDB directory}) async {
     Database db = await instance.database;
     int index = await db.insert(_masterTableName, {
       'dir_name': directory.dirName,
@@ -107,7 +107,7 @@ class DatabaseHelper {
 
   //// this fun insert info about images in directories(folder) tables
   ///it also update master table Derectories details (update count of image for new image inseryed)
-  Future createImage({ImageOS image, String tableName}) async {
+  Future createImage({ImageDB image, String tableName}) async {
     Database db = await instance.database;
     getDirectoryTableName(tableName);
     int index = await db.insert(_dirTableName, {
@@ -169,7 +169,7 @@ class DatabaseHelper {
   }
 
   /// rename file name (explore not sure)
-  Future<int> renameDirectory({DirectoryOS directory}) async {
+  Future<int> renameDirectory({DirectoryDB directory}) async {
     Database db = await instance.database;
     return await db.update(_masterTableName, {'new_name': directory.newName},
         where: 'dir_name == ?', whereArgs: [directory.dirName]);
@@ -197,7 +197,7 @@ class DatabaseHelper {
   }
 
   // update images path
-  Future<int> updateImagePath({String tableName, ImageOS image}) async {
+  Future<int> updateImagePath({String tableName, ImageDB image}) async {
     Database db = await instance.database;
     getDirectoryTableName(tableName);
     return await db.update(
@@ -210,7 +210,7 @@ class DatabaseHelper {
   }
 
   // update images index
-  Future<int> updateImageIndex({ImageOS image, String tableName}) async {
+  Future<int> updateImageIndex({ImageDB image, String tableName}) async {
     Database db = await instance.database;
     getDirectoryTableName(tableName);
     return await db.update(
@@ -224,7 +224,7 @@ class DatabaseHelper {
 
   /// info about compress
   ///
-  Future<int> updateShouldCompress({ImageOS image, String tableName}) async {
+  Future<int> updateShouldCompress({ImageDB image, String tableName}) async {
     Database db = await instance.database;
     getDirectoryData(tableName);
     return await db.update(
@@ -260,7 +260,7 @@ class DatabaseHelper {
   }
 
 ///////////////////// Pdf Edit database
-  Future createImageTemp({ImageOS image}) async {
+  Future createImageTemp({ImageDB image}) async {
     Database db = await instance.database;
     print(image.imgPath);
     int index = await db.insert(_editTableName, {
@@ -291,7 +291,7 @@ class DatabaseHelper {
     return data;
   }
 
-  Future<int> updateTempImagePath({ImageOS image}) async {
+  Future<int> updateTempImagePath({ImageDB image}) async {
     Database db = await instance.database;
     return await db.update(
         _editTableName,
