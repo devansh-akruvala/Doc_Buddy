@@ -1,4 +1,7 @@
 # doc_buddy
+<h2>Video</h2>
+
+[![Watch the video](https://img.youtube.com/vi/StveJBTtWIg/maxresdefault.jpg)](https://youtu.be/StveJBTtWIg)
 
 <h2>Permissions</h2>
 <p>
