@@ -113,7 +113,7 @@ class _PdfEdit extends State<PdfEdit> {
         final pageImage = await page.render(
           width: page.width,
           height: page.height,
-          format: PdfPageFormat.PNG,
+          format: PdfPageImageFormat.png,
         );
         await page.close();
         final fileabc = File('${tempDir.dirPath}/tempimg_$i.jpg');

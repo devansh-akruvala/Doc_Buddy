@@ -14,11 +14,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<bool> _requestPermission() async {
-    final PermissionHandler _permissionHandler = PermissionHandler();
-    var result = await _permissionHandler.requestPermissions(
-        <PermissionGroup>[PermissionGroup.storage, PermissionGroup.camera]);
-    if (result[PermissionGroup.storage] == PermissionStatus.granted &&
-        result[PermissionGroup.camera] == PermissionStatus.granted) {
+    // final PermissionHandler _permissionHandler = PermissionHandler();
+    // var result = await _permissionHandler.requestPermissions(
+    //     <PermissionGroup>[PermissionGroup.storage, PermissionGroup.camera]);
+    Map<Permission, PermissionStatus> result = await [
+      Permission.storage,
+      Permission.camera,
+      Permission.manageExternalStorage
+    ].request();
+    if (result[Permission.storage] == PermissionStatus.granted &&
+        result[Permission.camera] == PermissionStatus.granted &&
+        result[Permission.manageExternalStorage] == PermissionStatus.granted) {
       print('Granted');
       return true;
     }

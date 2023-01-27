@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:directory_picker/directory_picker.dart';
+import 'package:easy_folder_picker/FolderPicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
@@ -21,7 +21,7 @@ class _ImageCompressState extends State<ImageCompress> {
   int _value = 0;
   Future<void> getimage() async {
     File image;
-    var picture = await picker.getImage(source: ImageSource.gallery);
+    var picture = await picker.pickImage(source: ImageSource.gallery);
     print(picture);
     if (picture != null) {
       final requiredPicture = File(picture.path);
@@ -35,7 +35,8 @@ class _ImageCompressState extends State<ImageCompress> {
   }
 
   Future<void> compressFile(File file) async {
-    Directory tempDir = await getTemporaryDirectory();
+    Directory tempDir = Directory.systemTemp; //await getTemporaryDirectory();
+
     var result = await FlutterImageCompress.compressAndGetFile(
       file.path,
       '${tempDir.path}.jpeg',
@@ -64,7 +65,7 @@ class _ImageCompressState extends State<ImageCompress> {
       directory = await getExternalStorageDirectory();
     }
 
-    Directory newDirectory = await DirectoryPicker.pick(
+    Directory newDirectory = await FolderPicker.pick(
       allowFolderCreation: true,
       context: context,
       rootDirectory: directory,
@@ -98,9 +99,10 @@ class _ImageCompressState extends State<ImageCompress> {
     // eg:- "Volume/VM/abcd_out.jpeg"
 
     try {
-      final name = DateTime.now().toString();
-      final output = "${selectedDirectory.path}/$name.jpeg";
-
+      var name = DateTime.now().toString();
+      name = name.replaceAll(RegExp(r':'), '_');
+      final output = "${selectedDirectory.path}/$name.jpg";
+      print(output);
       print('before');
       File temp = await _compressedImage.copy(output);
       print('After');

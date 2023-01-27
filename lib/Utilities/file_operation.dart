@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import './classes.dart';
 import './dbhelper.dart';
-import 'package:directory_picker/directory_picker.dart';
+import 'package:easy_folder_picker/FolderPicker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -69,7 +69,7 @@ class FileOperations {
   Future<File> openCamera() async {
     File image;
     final _picker = ImagePicker();
-    var picture = await _picker.getImage(source: ImageSource.camera);
+    var picture = await _picker.pickImage(source: ImageSource.camera);
     if (picture != null) {
       final requiredPicture = File(picture.path);
       image = requiredPicture;
@@ -81,7 +81,7 @@ class FileOperations {
   Future<File> openGallery() async {
     File image;
     final _picker = ImagePicker();
-    var picture = await _picker.getImage(source: ImageSource.gallery);
+    var picture = await _picker.pickImage(source: ImageSource.gallery);
     if (picture != null) {
       final requiredPicture = File(picture.path);
       image = requiredPicture;
@@ -152,7 +152,7 @@ class FileOperations {
       directory = await getExternalStorageDirectory();
     }
 
-    Directory newDirectory = await DirectoryPicker.pick(
+    Directory newDirectory = await FolderPicker.pick(
         allowFolderCreation: true,
         context: context,
         rootDirectory: directory,

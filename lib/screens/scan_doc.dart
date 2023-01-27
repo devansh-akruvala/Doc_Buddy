@@ -136,24 +136,27 @@ class _ScanDocState extends State<ScanDoc> {
     File image;
     image = await fileOperations.openCamera();
     if (image != null) {
-      File croppedFile = await ImageCropper.cropImage(
-          sourcePath: image.path,
-          // aspectRatioPresets: [
-          //   CropAspectRatioPreset.square,
-          //   CropAspectRatioPreset.ratio3x2,
-          //   CropAspectRatioPreset.original,
-          //   CropAspectRatioPreset.ratio4x3,
-          //   CropAspectRatioPreset.ratio16x9
-          // ],
-          androidUiSettings: AndroidUiSettings(
+      CroppedFile croppedFile = await ImageCropper().cropImage(
+        sourcePath: image.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        uiSettings: [
+          AndroidUiSettings(
               toolbarTitle: 'Cropper',
-              toolbarColor: Colors.blue,
+              toolbarColor: Colors.deepOrange,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.original,
               lockAspectRatio: false),
-          iosUiSettings: IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          ));
+          IOSUiSettings(
+            title: 'Cropper',
+          ),
+        ],
+      );
       File imageFile = File(croppedFile.path ?? image.path);
       Directory tempDir = await getTemporaryDirectory();
       imageFile = await FlutterImageCompress.compressAndGetFile(

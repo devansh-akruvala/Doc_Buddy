@@ -52,25 +52,28 @@ class _ImageCardState extends State<ImageCard> {
             FocusedMenuItem(
               title: Text("Edit"),
               onPressed: () async {
-                File croppedFile = await ImageCropper.cropImage(
-                    sourcePath: widget.imageDB.imgPath,
-                    // aspectRatioPresets: [
-                    //   CropAspectRatioPreset.square,
-                    //   CropAspectRatioPreset.ratio3x2,
-                    //   CropAspectRatioPreset.original,
-                    //   CropAspectRatioPreset.ratio4x3,
-                    //   CropAspectRatioPreset.ratio16x9
-                    // ],
-                    androidUiSettings: AndroidUiSettings(
+                CroppedFile croppedFile = await ImageCropper().cropImage(
+                  sourcePath: widget.imageDB.imgPath,
+                  aspectRatioPresets: [
+                    CropAspectRatioPreset.square,
+                    CropAspectRatioPreset.ratio3x2,
+                    CropAspectRatioPreset.original,
+                    CropAspectRatioPreset.ratio4x3,
+                    CropAspectRatioPreset.ratio16x9
+                  ],
+                  uiSettings: [
+                    AndroidUiSettings(
                         toolbarTitle: 'Cropper',
-                        toolbarColor: Colors.blue,
+                        toolbarColor: Colors.deepOrange,
                         toolbarWidgetColor: Colors.white,
                         initAspectRatio: CropAspectRatioPreset.original,
                         lockAspectRatio: false),
-                    iosUiSettings: IOSUiSettings(
-                      minimumAspectRatio: 1.0,
-                    ));
-                File image = croppedFile;
+                    IOSUiSettings(
+                      title: 'Cropper',
+                    ),
+                  ],
+                );
+                File image = File(croppedFile.path);
                 File temp = File(widget.imageDB.imgPath
                         .substring(0, widget.imageDB.imgPath.lastIndexOf(".")) +
                     "c.jpg");

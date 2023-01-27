@@ -40,8 +40,8 @@ class _FingerPrintAuthState extends State<FingerPrintAuth> {
             if (canCheck) {
               try {
                 bool status = await localAuth.authenticate(
-                    localizedReason: 'Authenticate to proceed further',
-                    stickyAuth: true);
+                  localizedReason: 'Authenticate to proceed further',
+                );
                 if (status) {
                   Navigator.popAndPushNamed(context, LockerWidget.routeName);
                   print('done');
